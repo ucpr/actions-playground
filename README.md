@@ -1,3 +1,1 @@
 ## actions-playground
-
-actions-playground
