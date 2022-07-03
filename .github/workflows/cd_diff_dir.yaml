@@ -19,4 +19,4 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
           echo "Hello World!"
-          git diff ${{ github.base_ref }} --name-only
+          git diff main --name-only
