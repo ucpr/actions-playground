@@ -6,6 +6,16 @@ on:
   pull_request:
 
 jobs:
+  event:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: comment
+        run: |
+          echo ${{ github.event.issue.pull_request }}
+          echo ${{ github.event.pull_request }}
+          echo ${{ github.event.pull_request.synchronize }}
+
   env_or:
     if: ${{ ((github.event.issue.pull_request) && (github.event.comment.body == '/comment')) || (github.event.pull_request.synchronize) }}
     runs-on: ubuntu-latest
