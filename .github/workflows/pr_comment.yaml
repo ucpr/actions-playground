@@ -20,7 +20,7 @@ jobs:
       - name: comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          gh pr comment --body "Hello World!" "${URL}"
+          gh pr comment ${PR_NUMBER} --body "Hello World!"
 
