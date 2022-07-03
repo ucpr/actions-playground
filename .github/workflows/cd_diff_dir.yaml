@@ -17,7 +17,7 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
           #          gh pr comment ${PR_NUMBER} --body "Hello World!"
-          for f in `git status -s | cut -d ' ' -f 3`; do \
+          for f in `git diff main --name-only`; do \
             echo ${f}; \
             pwd; \
             echo ${f%/*}; \
