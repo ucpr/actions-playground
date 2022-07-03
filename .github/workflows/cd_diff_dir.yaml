@@ -18,8 +18,8 @@ jobs:
         run: |
           #          gh pr comment ${PR_NUMBER} --body "Hello World!"
           for f in `git status -s | cut -d ' ' -f 3`; do \
-            echo ${f} \
-            pwd \
-            echo ${f%/*} \
-            cd ${f%/*} \
+            echo ${f}; \
+            pwd; \
+            echo ${f%/*}; \
+            cd ${f%/*}; \
           done
