@@ -16,9 +16,10 @@ jobs:
           echo ${{ github.event.pull_request }}
           echo ${{ github.event.pull_request.synchronize }}
           echo ${{ github.event.pull_request.opened }}
+          echo ${{ github.event.push }}
 
   env_or:
-    if: ${{ ((github.event.issue.pull_request) && (github.event.comment.body == '/env_or')) || (github.event.pull_request.synchronize) }}
+    if: ${{ ((github.event.issue.pull_request) && (github.event.comment.body == '/env_or')) || (github.event.pull_request.synchronize) || (github.event.push) }}
     runs-on: ubuntu-latest
 
     steps:
