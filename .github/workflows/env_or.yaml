@@ -6,8 +6,19 @@ on:
   pull_request:
 
 jobs:
+  event:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: comment
+        run: |
+          echo ${{ github.event.issue.pull_request }}
+          echo ${{ github.event.pull_request }}
+          echo ${{ github.event.pull_request.synchronize }}
+          echo ${{ github.event.pull_request.opened }}
+
   env_or:
-    if: ${{ ((github.event.issue.pull_request) && (github.event.comment.body == '/comment')) || (github.event.pull_request.synchronize) }}
+    if: ${{ ((github.event.issue.pull_request) && (github.event.comment.body == '/env_or')) || (github.event.pull_request.synchronize) }}
     runs-on: ubuntu-latest
 
     steps:
@@ -16,6 +27,6 @@ jobs:
       - name: comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }} || ${{ github.event.number }}
         run: |
+          PR_NUMBER=("${{ github.event.issue.number }}" || "${{ github.event.number }}")
           gh pr comment ${PR_NUMBER} --body "Hello World!"
