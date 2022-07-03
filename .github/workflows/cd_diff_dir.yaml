@@ -18,10 +18,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          gh pr diff 3  | grep "diff --git" | cut -d " " -f 3 | awk 'BEGIN{FS="a/"}{print $2}'
-          echo "Hello World!"
+          # actionのタイプが `issue_comment` の場合は git diff で拾えなさそう？なので gh コマンドで引いてくる
+          # gh pr diff 3  | grep "diff --git" | cut -d " " -f 3 | awk 'BEGIN{FS="a/"}{print $2}'
           for f in `gh pr diff 3  | grep "diff --git" | cut -d " " -f 3 | awk 'BEGIN{FS="a/"}{print $2}'`; do \
-            echo ${f}
-            echo ${f%/*}
+            echo ${f} # full path
+            echo ${f%/*} # dir path
           done
 
