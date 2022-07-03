@@ -17,7 +17,7 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
           gh pr comment ${PR_NUMBER} --body "Hello World!"
-          echo "```\n" > comment.txt
-          echo "Hello World!" >> comment.txt
-          echo "\n```" >> comment.txt
+          echo '```' > comment.txt
+          echo 'Hello World!' >> comment.txt
+          echo '```' >> comment.txt
           gh pr comment ${PR_NUMBER} -F comment.txt
