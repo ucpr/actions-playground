@@ -27,6 +27,6 @@ jobs:
       - name: comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }} || ${{ github.event.number }}
         run: |
+          PR_NUMBER=("${{ github.event.issue.number }}" || "${{ github.event.number }}")
           gh pr comment ${PR_NUMBER} --body "Hello World!"
