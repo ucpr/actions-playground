@@ -20,8 +20,8 @@ jobs:
         run: |
           gh pr diff 3  | grep "diff --git" | cut -d " " -f 3 | awk 'BEGIN{FS="a/"}{print $2}'
           echo "Hello World!"
-          for f in `gh pr diff 3  | grep "diff --git" | cut -d " " -f 3 | awk 'BEGIN{FS="a/"}{print $2}'` do \
+          for f in `gh pr diff 3  | grep "diff --git" | cut -d " " -f 3 | awk 'BEGIN{FS="a/"}{print $2}'`; do \
             echo ${f}
-            echo "${f%/*}"
+            echo ${f%/*}
           done
 
