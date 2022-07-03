@@ -16,10 +16,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          #          gh pr comment ${PR_NUMBER} --body "Hello World!"
-          for f in `git diff main --name-only`; do \
-            echo ${f}; \
-            pwd; \
-            echo ${f%/*}; \
-            cd ${f%/*}; \
+          echo "Hello World!"
+          for f in `git diff main --name-only`; do
+            echo ${f}
+            pwd
+            echo ${f%/*}
+            cd ${f%/*}
           done
