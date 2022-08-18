@@ -1,0 +1,17 @@
+name: env
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  env:
+    environment:
+      name: approve_test
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.0.0
+      - run: echo 'Hello'
