@@ -1,4 +1,4 @@
-name: environment
+name: test_env
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - 'v*'
 
 jobs:
-  environment:
+  test_env:
+    runs-on: ubuntu-latest
+
     environment:
       name: approve_test
-
-    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3.0.0
