@@ -1,4 +1,4 @@
-name: env
+name: environment
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  env:
+  environment:
     environment:
       name: approve_test
 
