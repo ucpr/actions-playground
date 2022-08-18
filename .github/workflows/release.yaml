@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "release version"
+        description: "release version (e.g. v0.0.1)"
         required: true
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
 
       - name: create tag
         run: |
-          TAG=${{ github.event.input.version }}
+          TAG=${{ github.event.inputs.version }}
           git tag ${TAG}
           git push origin ${TAG}
 
@@ -24,5 +24,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG=${{ github.event.input.version }}
+          TAG=${{ github.event.inputs.version }}
           gh release create ${TAG} --generate-notes
