@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
+        type: choice
         description: "release version (e.g. v0.0.1)"
         required: true
         options:
