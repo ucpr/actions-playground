@@ -28,7 +28,7 @@ jobs:
           REPOSITORY: ${{ github.repository }}
           CONFIG_FILE: rel-filter/filter-refactoring.yml
         run: | 
-          TAG="${{ github.event.inputs.target }}:$(date +%Y%m%d%H%M%S)"
+          TAG="${{ github.event.inputs.target }}.$(date +%Y%m%d%H%M%S)"
 
           git tag ${TAG}
           git push origin ${TAG}
