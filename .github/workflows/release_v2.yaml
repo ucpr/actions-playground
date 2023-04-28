@@ -1,0 +1,42 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        type: choice
+        description: 'release target'
+        required: true
+        options:
+          - backend
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+
+      - name: setup git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: create tag and release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          CONFIG_FILE: rel-filter/filter-refactoring.yml
+        run: | 
+          TAG="${{ github.event.inputs.target }}:$(date "+%Y%m%d%H%M%S)"
+
+          git tag ${TAG}
+          git push origin ${TAG}
+
+          OWNER="$(cut -d '/' -f 1 <<< ${REPOSITORY})"
+          NAME="$(cut -d '/' -f 2 <<< ${REPOSITORY})"
+          PREV_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}/\* | head -1)"
+          CONFIG_FILE=".github/release-filter/${{ github.event.inputs.target }}.yaml"
+
+          gh api "/repos/${OWNER}/${NAME}/releases/generate-notes" -f "tag_name=${TAG}" -f "previous_tag_name=${PREV_TAG}" -f "configuration_file_path=${CONFIG_FILE}" --jq .body
+          | sed -e 's/^### /::set-output name=label::/'
