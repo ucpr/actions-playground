@@ -25,7 +25,7 @@ jobs:
       - name: create tag
         run: | 
           TAG="${{ github.event.inputs.target }}.$(date +%Y%m%d%H%M%S)"
-          echo "RELEASE_TAG=${RELEASE_TAG}" | tee -a "${RELEASE_TAG}"
+          echo "RELEASE_TAG=${TAG}" | tee -a "${RELEASE_TAG}"
           git tag ${TAG}
           git push origin ${TAG}
 
