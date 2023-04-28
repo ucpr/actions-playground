@@ -34,12 +34,18 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         run: | 
           OWNER="$(cut -d '/' -f 1 <<< ${REPOSITORY})"
+          echo "${OWNER}"
           NAME="$(cut -d '/' -f 2 <<< ${REPOSITORY})"
+          echo "${NAME}"
           PREV_RELEASE_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}/\* | sed -n '2p')"
+          echo "${PREV_RELEASE_TAG}"
           RELEASE_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}/\* | sed -n '1p')"
+          echo "${RELEASE_TAG}"
           CONFIG_FILE=".github/release-filter/${{ github.event.inputs.target }}.yaml"
+          echo "${CONFIG_FILE}"
 
           ## Release Note の生成
           BODY=$(gh api "/repos/${OWNER}/${NAME}/releases/generate-notes" -f "tag_name=${RELEASE_TAG}" -f "previous_tag_name=${PREV_RELEASE_TAG}" -f "configuration_file_path=${CONFIG_FILE}" --jq .body)
+          echo "${BODY}"
           ## Release の作成
-          gh release create ${RELEASE_TAG} --title "Release ${RELEASE_TAG}" --notes "${BODY}" --draft=false --prerelease=false
+          gh release create "${RELEASE_TAG}" --title "Release ${RELEASE_TAG}" --notes "${BODY}" --draft=false --prerelease=false
