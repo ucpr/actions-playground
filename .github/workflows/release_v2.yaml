@@ -16,25 +16,39 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3.0.2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
 
       - name: setup git
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-      - name: create tag and release
+      - name: create tag
+        run: | 
+          RELEASE_TAG="${{ github.event.inputs.target }}.$(date +%Y%m%d%H%M%S)"
+          git tag ${RELEASE_TAG}
+          git push origin ${RELEASE_TAG}
+
+      - name: create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
         run: | 
-          TAG="${{ github.event.inputs.target }}.$(date +%Y%m%d%H%M%S)"
-
-          git tag ${TAG}
-          git push origin ${TAG}
-
           OWNER="$(cut -d '/' -f 1 <<< ${REPOSITORY})"
+          echo "${OWNER}"
           NAME="$(cut -d '/' -f 2 <<< ${REPOSITORY})"
-          PREV_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}/\* | head -1)"
+          echo "${NAME}"
+          PREV_RELEASE_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}.\* | sed -n '2p')"
+          echo "${PREV_RELEASE_TAG}"
+          RELEASE_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}.\* | sed -n '1p')"
+          echo "${RELEASE_TAG}"
           CONFIG_FILE=".github/release-filter/${{ github.event.inputs.target }}.yaml"
+          echo "${CONFIG_FILE}"
 
-          gh api "/repos/${OWNER}/${NAME}/releases/generate-notes" -f "tag_name=${TAG}" -f "previous_tag_name=${PREV_TAG}" -f "configuration_file_path=${CONFIG_FILE}" --jq .body
+          ## Release Note の生成
+          BODY=$(gh api "/repos/${OWNER}/${NAME}/releases/generate-notes" -f "tag_name=${RELEASE_TAG}" -f "previous_tag_name=${PREV_RELEASE_TAG}" -f "configuration_file_path=${CONFIG_FILE}" --jq .body)
+          echo "${BODY}"
+          ## Release の作成
+          gh release create "${RELEASE_TAG}" --title "Release ${RELEASE_TAG}" --notes "${BODY}" --draft=false --prerelease=false
