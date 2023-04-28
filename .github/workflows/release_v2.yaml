@@ -42,4 +42,4 @@ jobs:
           ## Release Note の生成
           BODY=$(gh api "/repos/${OWNER}/${NAME}/releases/generate-notes" -f "tag_name=${RELEASE_TAG}" -f "previous_tag_name=${PREV_RELEASE_TAG}" -f "configuration_file_path=${CONFIG_FILE}" --jq .body)
           ## Release の作成
-          gh release create "${RELEASE_TAG}" --title "Release ${RELEASE_TAG}" --notes "${BODY}" --draft=false --prerelease=false
+          gh release create ${RELEASE_TAG} --title "Release ${RELEASE_TAG}" --notes "${BODY}" --draft=false --prerelease=false
