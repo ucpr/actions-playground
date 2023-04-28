@@ -38,5 +38,4 @@ jobs:
           PREV_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}/\* | head -1)"
           CONFIG_FILE=".github/release-filter/${{ github.event.inputs.target }}.yaml"
 
-          gh api "/repos/${OWNER}/${NAME}/releases/generate-notes" -f "tag_name=${TAG}" -f "previous_tag_name=${PREV_TAG}" -f "configuration_file_path=${CONFIG_FILE}" --jq .body
-          | sed -e 's/^### /::set-output name=label::/'
+          gh api "/repos/${OWNER}/${NAME}/releases/generate-notes" -f "tag_name=${TAG}" -f "previous_tag_name=${PREV_TAG}" -f "configuration_file_path=${CONFIG_FILE}" --jq .body | sed -e 's/^### /::set-output name=label::/'
