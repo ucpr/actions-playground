@@ -24,10 +24,10 @@ jobs:
 
       - name: create tag
         run: | 
-          TAG="${{ github.event.inputs.target }}.$(date +%Y%m%d%H%M%S)"
-          echo "RELEASE_TAG=${TAG}" | tee -a "${RELEASE_TAG}"
-          git tag ${TAG}
-          git push origin ${TAG}
+          RELEASE_TAG="${{ github.event.inputs.target }}.$(date +%Y%m%d%H%M%S)"
+          echo "RELEASE_TAG=${RELEASE_TAG}" | tee -a "${RELEASE_TAG}"
+          git tag ${RELEASE_TAG}
+          git push origin ${RELEASE_TAG}
 
       - name: create release
         env:
@@ -36,11 +36,11 @@ jobs:
         run: | 
           OWNER="$(cut -d '/' -f 1 <<< ${REPOSITORY})"
           NAME="$(cut -d '/' -f 2 <<< ${REPOSITORY})"
-          PREV_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}/\* | head -1)"
-          TAG="${{ steps.prepare.outputs.RELEASE_TAG }}"
+          PREV_RELEASE_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}/\* | head -1)"
+          RELEASE_TAG="${{ steps.prepare.outputs.RELEASE_TAG }}"
           CONFIG_FILE=".github/release-filter/${{ github.event.inputs.target }}.yaml"
 
           ## Release Note の生成
-          BODY=$(gh api "/repos/${OWNER}/${NAME}/releases/generate-notes" -f "tag_name=${TAG}" -f "previous_tag_name=${PREV_TAG}" -f "configuration_file_path=${CONFIG_FILE}" --jq .body)
+          BODY=$(gh api "/repos/${OWNER}/${NAME}/releases/generate-notes" -f "tag_name=${RELEASE_TAG}" -f "previous_tag_name=${PREV_RELEASE_TAG}" -f "configuration_file_path=${CONFIG_FILE}" --jq .body)
           ## Release の作成
-          gh release create "${TAG}" --title "Release ${TAG}" --notes "${BODY}" --draft=false --prerelease=false
+          gh release create "${RELEASE_TAG}" --title "Release ${RELEASE_TAG}" --notes "${BODY}" --draft=false --prerelease=false
