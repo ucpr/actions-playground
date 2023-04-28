@@ -36,7 +36,7 @@ jobs:
         run: | 
           OWNER="$(cut -d '/' -f 1 <<< ${REPOSITORY})"
           NAME="$(cut -d '/' -f 2 <<< ${REPOSITORY})"
-          PREV_RELEASE_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}/\* | head -1)"
+          PREV_RELEASE_TAG="$(git tag -l --sort -authordate ${{ github.event.inputs.target }}/\* | sed -n '2p')"
           RELEASE_TAG="${{ steps.prepare.outputs.RELEASE_TAG }}"
           CONFIG_FILE=".github/release-filter/${{ github.event.inputs.target }}.yaml"
 
