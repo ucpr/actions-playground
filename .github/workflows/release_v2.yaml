@@ -26,7 +26,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
-          CONFIG_FILE: rel-filter/filter-refactoring.yml
         run: | 
           TAG="${{ github.event.inputs.target }}.$(date +%Y%m%d%H%M%S)"
 
