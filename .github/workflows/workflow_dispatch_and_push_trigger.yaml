@@ -1,0 +1,39 @@
+name: Workflow dispatch and Push trigger
+
+on:
+  push:
+    - main
+  workflow_dispatch:
+    branches: [ main ]
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        include:
+          - project: dev
+          - project: load
+          - project: prd
+
+    if: github.event_name != 'workflow_dispatch' && {{ matrix.project }} == 'prd'
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4.1.7
+
+      - name: Set CommitHash as Image Tag
+        if: {{ matrix.project }} != 'prd'
+        run: |
+          echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Set CommitHash as Image Tag
+        if: {{ matrix.project }} == 'prd'
+        env:
+          TZ: 'Asia/Tokyo'
+        run: |
+          echo "IMAGE_TAG=testtag/$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
+      - name: Echo IMAGE_TAG
+        run: |
+          echo ${IMAGE_TAG}
