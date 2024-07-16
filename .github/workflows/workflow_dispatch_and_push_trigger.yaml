@@ -2,9 +2,11 @@ name: Workflow dispatch and Push trigger
 
 on:
   push:
-    - main
+    branches:
+      - main
   workflow_dispatch:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   job:
@@ -17,18 +19,24 @@ jobs:
           - project: load
           - project: prd
 
-    if: github.event_name != 'workflow_dispatch' && {{ matrix.project }} == 'prd'
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v4.1.7
+      - shell: bash
+        run: |
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ]  && [ ${{ matrix.project }} = "prd" ]; then
+            echo "Skipping job for prd, ${{ github.event_name }}, ${{ matrix.project }}"
+            exit 0
+          fi
 
-      - name: Set CommitHash as Image Tag
-        if: {{ matrix.project }} != 'prd'
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Set CommitHash as Image Tag for non-prd
+        if: ${{ matrix.project != 'prd' }}
         run: |
           echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Set CommitHash as Image Tag
-        if: {{ matrix.project }} == 'prd'
+      - name: Set CommitHash as Image Tag for prd
+        if: ${{ matrix.project == 'prd' }}
         env:
           TZ: 'Asia/Tokyo'
         run: |
